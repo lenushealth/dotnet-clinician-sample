@@ -1,0 +1,35 @@
+﻿@using Clinician.Models
+@using Clinician.Services.Impl
+@model IEnumerable<AgencySubjectViewModel>
+
+@inject ISampleDataTypeMapper SampleDataTypeMapper
+
+<h2>Agency Query</h2>
+<hr />
+<p>Select a subject to query:</p>
+<div class="row">
+    <div class="col-lg-12">
+        @if (Model.Any())
+        {
+            <div class="list-group">
+                @foreach (var subject in Model)
+                {
+                    <div class="list-group-item" asp-controller="AgencyQuery" asp-action="Detail" asp-route-id="@subject.Subject">
+                        <h4 class="list-group-item-heading">@subject.Name</h4>
+                        <p class="list-group-item-text">
+                            <a class="btn btn-info" asp-controller="AgencyQuery" asp-action="Index" asp-route-subject="@subject.Subject">- All -</a>
+                            @foreach (var type in SampleDataTypeMapper.GetAvailableSampleDataTypes(subject.HealthDataScopes.Select(s => s.Name)))
+                            {
+                                <a class="btn btn-info" asp-controller="AgencyQuery" asp-action="Index" asp-route-type="@type.Slug" asp-route-subject="@subject.Subject">@type.Name</a>
+                            }
+                        </p>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning">You do not have agency over any user's at present</div>
+        }
+    </div>
+</div>

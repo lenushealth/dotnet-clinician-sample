@@ -1,0 +1,22 @@
+﻿@using Clinician.Controllers
+@using Clinician.ViewComponents
+@using Humanizer
+@model AgencyQueryViewModel
+
+<h1>@Model.AgencySubject.Name</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-12">
+        @await (Component.InvokeAsync<AgencySubjectQueryDateFilter>(new { agencySubject = @Model.AgencySubject }))
+        @{
+            foreach (var type in Model.Types)
+            {
+                <fieldset style="margin-top: 1em">
+                    <legend>@type.ToString("G").Humanize()</legend>
+                    @(await Component.InvokeAsync<HealthQuery>(new {type = type}))
+                </fieldset>
+            }
+        }
+    </div>
+</div>

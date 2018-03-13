@@ -1,0 +1,8 @@
+﻿@using Newtonsoft.Json
+@model Clinician.ApiClients.HealthClient.Models.ProblemDetails
+
+<div class="alert alert-danger">
+    <h4>@Model.Title</h4>
+    <p>@Model.Detail</p>
+    <pre><code>@JsonConvert.SerializeObject(Model, Formatting.Indented)</code></pre>
+</div>

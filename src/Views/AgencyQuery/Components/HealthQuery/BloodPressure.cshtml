@@ -1,0 +1,84 @@
+﻿@using Clinician.Units
+@using Newtonsoft.Json
+@model IEnumerable<BloodPressureSampleModel>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Reading</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(m => item.From)</td>
+                <td>
+
+                    <div health-diastolic="@item.Diastolic" health-systolic="@item.Systolic" health-unit="mmHg"></div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@Html.Partial("_ChartingScripts")
+
+<div id="@SampleDataTypes.BloodPressure" class="ct-chart ct-perfect-fifth"></div>
+
+<script type="text/javascript">
+
+    var data = @Json.Serialize(new[]
+               {
+                   new { name = nameof(BloodPressureSampleModel.Diastolic), data = @Model.Select(d => new { meta = new { category = d.Diastolic.Category(BloodPressureUnits.Diastolic).ToString("G") }, x = d.From.ToString("s"), y = d.Diastolic.ToString("mmHg") })},
+                   new { name = nameof(BloodPressureSampleModel.Systolic), data = @Model.Select(d => new { meta = new { category = d.Diastolic.Category(BloodPressureUnits.Diastolic).ToString("G") }, x = d.From.ToString("s"), y = d.Systolic.ToString("mmHg") })},
+               }, new JsonSerializerSettings() { Formatting = Formatting.Indented, });
+
+    var chart = new Chartist.Line('#@SampleDataTypes.BloodPressure',
+            {
+                series: data
+            },
+            {
+                axisY: {
+                    onlyInteger: true,
+                    offset: 10
+                },
+                axisX: {
+                },
+                showArea: false,
+                showLine: false,
+                showPoint: true,
+                lineSmooth: Chartist.Interpolation.simple({
+                    divisor: 2
+                }),
+                fullWidth: true,
+                chartPadding: {
+                    right: 20
+                },
+                low: 0,
+                plugins: [
+                ]
+            });
+
+        chart.on('draw', function(context) {
+            if(context.type === 'point') {
+                var colour = '#000000';
+                if (context.meta.category == '@BloodPressureUnitCategory.Low') {
+                    colour = '#5bc0de';
+                } else if (context.meta.category == '@BloodPressureUnitCategory.Normal') {
+                    colour = '#5cb85c';
+                } else if (context.meta.category == '@BloodPressureUnitCategory.PreHigh') {
+                    colour = '#f0ad4e';
+                } else if (context.meta.category == '@BloodPressureUnitCategory.High') {
+                    colour = '#d9534f';
+                }
+
+                // console.log(context);
+                context.element.attr({
+                    style: 'stroke: ' +colour,
+                });
+            }
+        });
+
+</script>

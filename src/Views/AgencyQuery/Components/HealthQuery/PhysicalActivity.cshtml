@@ -1,0 +1,21 @@
+﻿@model IEnumerable<PhysicalActivitySampleModel>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Date</th>
+        <th>Reading</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@Html.DisplayFor(m => item.From)</td>
+            <td>
+                <span>@Html.DisplayFor(m => item.Steps)</span>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

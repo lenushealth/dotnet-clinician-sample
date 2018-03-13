@@ -1,0 +1,20 @@
+﻿@using System.IdentityModel.Tokens.Jwt
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>Clinical Portal Sample</h1>
+    <p>This is a sample application using the Lenus health platform and demonstrates how as an agent you can request and query health data associated with other users</p>
+    <p>The steps required are (see documentation <a href="">here</a>):</p>
+    <ul>
+        <li>You must have the appropriate health platform permissions to make the request for agency, for this you must have been associated with the "Agent" role</li>
+        <li>Then, from a client application registered with the health platform you redirect to the agency request invitation page</li>
+        <li>Once the agency request is submitted, you will be returned to your client application and the user over which you are requesting agency will receive an email invitation</li>
+        <li>Once agency is established (the user has accepted the invitation), you will be able to query health data for that user</li>
+    </ul>
+    <p>
+        <a class="btn btn-primary btn-lg" role="button" asp-action="Index" asp-controller="AgencyRequest"><i class="glyphicon glyphicon-plus"></i> Request Agency</a>
+        <a class="btn btn-primary btn-lg" role="button" asp-action="Index" asp-controller="AgencyUserList"><i class="glyphicon glyphicon-search"></i> Query Health Data</a>
+    </p>
+</div>

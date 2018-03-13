@@ -1,0 +1,8 @@
+﻿@model AgencySubjectQueryDateFilterViewModel
+
+<div class="btn-group">
+    @foreach (var filter in Model.Filters)
+    {
+        <a type="button" asp-route-subject="@Model.AgencySubject.Subject" asp-route-from="@filter.Value.From" asp-route-to="@filter.Value.To" class="btn btn-default">@filter.Key</a>
+    }
+</div>

@@ -1,0 +1,9 @@
+﻿@if (!User.IsInRole("agent"))
+{
+    <div class="alert alert-danger" role="alert" style="margin-top: 10px">
+        <strong>Your account is not suitable for this sample application</strong>
+        <hr/>
+        This sample application requires that your are logged in with an account that has been configured as an <strong>Agent</strong>.
+        Unfortunately your account does not have this configuration set. Please login with an appropriate account to use this sample application.
+    </div>
+}

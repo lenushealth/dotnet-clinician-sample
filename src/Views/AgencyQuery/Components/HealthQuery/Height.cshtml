@@ -1,0 +1,47 @@
+﻿@using Newtonsoft.Json
+@model IEnumerable<HeightSampleModel>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Reading</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(m => item.From)</td>
+                <td>
+                    <span>@Html.DisplayFor(m => item.Metres)</span>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@Html.Partial("_ChartingScripts")
+
+<div id="@SampleDataTypes.Height" class="ct-chart ct-perfect-fifth"></div>
+
+<script type="text/javascript">
+
+    var data = @Json.Serialize(new[]
+               {
+                   new { name = nameof(HeightSampleModel.Metres), data = @Model.Select(d => new { x = d.From.ToString("s"), y = d.Metres })},
+               }, new JsonSerializerSettings() { Formatting = Formatting.Indented, });
+
+    var chart = new Chartist.Bar('#@SampleDataTypes.Height',
+        {
+            series: data
+        });
+
+    chart.on('draw', function(context) {
+        if(context.type === 'point') {
+            context.element.attr({
+            });
+        }
+    });
+
+</script>
