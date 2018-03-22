@@ -14,13 +14,31 @@ Visit https://portal.dhi-dse.scot, register and/or login to your account and cre
 
 - RedirectUri: `http://localhost:5000/signin-oidc`
 - Grant Type: `authorization code`
-- Basic Scopes: `openid profile email agency_api`
+- Basic Scopes: `openid`, `profile`, `email`, `agency_api`
 - Correlation Scopes: `read.blood_pressure`
-- Vitals Quantity Scopes: `read.blood_pressure.blood_pressure_diastolic read.blood_pressure.blood_pressure_systolic read.body_mass`
+- Body Quantity Scopes: `read.height`, `read.body_mass`
+- Fitness Quantity Scopes: `read.step_count`
+- Vitals Quantity Scopes: `read.heart_rate`, `read.blood_pressure.blood_pressure_diastolic`, `read.blood_pressure.blood_pressure_systolic`
 
-Set a known `client secret` value
+Set a known `<client-secret>` value
 
-# Updating the sample configuration files
+# Deploy to Azure
+
+Deploying an instance directly to azure is the quickest way to see the sample in action, this will of course require that you have an active Azure subscription into which the resources can be created.  Use the button below to start the deployment
+
+[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
+
+You will need to know:
+
+- The absolute url of a health platform identity instance
+- The absolute url of the data store api associated with the health platform identity instance
+- The `client-id` created above
+- The `client-secret` set for the client application
+- The `redirect-uri`, this will be in the form `https://<site-name>.azurewebsites.net/signin-oidc`.  See the value you use for the **Site Name** parameter during deployment
+
+# Running Locally
+
+## Updating the sample configuration files
 
 Included in the sample is an `appsettings.development.json` file, within this file you will need to update the following configuration with values obtained with creating your client application:
 
@@ -55,10 +73,6 @@ Finally, update the Agency configuration as above:
   }
 ```
 
-# Building and Running
+## Building and Running
 
-Open the solution either in Visual Studio 2017 or using Visual Studio Code
-
-You can also deploy an instance of this sample directly to azure using:
-
-[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
+Open the solution either in Visual Studio 2017 or using Visual Studio Code.
