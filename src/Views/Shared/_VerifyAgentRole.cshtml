@@ -1,4 +1,4 @@
-﻿@if (!User.IsInRole("agent"))
+﻿@if (User.Identity.IsAuthenticated && !User.IsInRole("agent"))
 {
     <div class="alert alert-danger" role="alert" style="margin-top: 10px">
         <strong>Your account is not suitable for this sample application</strong>

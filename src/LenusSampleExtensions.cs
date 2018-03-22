@@ -38,7 +38,9 @@ namespace Clinician
                 })
                 .AddCookie(o =>
                 {
-                    o.AccessDeniedPath = "/error";
+                    //o.AccessDeniedPath = "/error";
+                    //o.LoginPath = "/login";
+                    //o.LogoutPath = "/logout";
                 })
                 .AddOpenIdConnect(o =>
                 {
@@ -67,7 +69,15 @@ namespace Clinician
 
                     o.Events.OnRemoteFailure += ctx =>
                     {
-                        ctx.Response.Redirect("/");
+                        if (ctx.Failure != null)
+                        {
+                            ctx.Response.Redirect($"/error?msg={ctx.Failure.Message}");
+                        }
+                        else
+                        {
+                            ctx.Response.Redirect("/");
+                        }
+
                         ctx.HandleResponse();
                         return Task.CompletedTask;
                     };

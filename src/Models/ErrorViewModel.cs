@@ -9,5 +9,7 @@ namespace Clinician.Models
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
         public Exception Exception { get; set; }
+
+        public string Message { get; set; }
     }
 }
