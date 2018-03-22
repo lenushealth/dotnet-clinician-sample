@@ -92,8 +92,9 @@
                 { "name": "OpenIdConnect:ClientId", "value": "[parameters('clientId')]" },
                 { "name": "OpenIdConnect:ClientSecret", "value": "[parameters('clientSecret')]" },
                 { "name": "HealthDataClient:BaseUri", "value": "[parameters('healthDataClientBaseUri')]" },
-                { "name": "Agency:AgencyRequestBaseUri", "value": "[concat(parameters('authority'), '/agency')]" },
-                { "name": "Agency:AgencyApiBaseUri", "value": "[concat(parameters('authority'), '/api/agency')]" }
+                { "name": "Agency:AgencyRequestUri", "value": "[concat(parameters('authority'), '/agency')]" },
+                { "name": "Agency:AgencyApiBaseUri", "value": "[concat(parameters('authority'), '/api/agency')]" },
+                { "name": "ASPNETCORE_ENVIRONMENT", "value": "Development" }
               ]
             }
           },
