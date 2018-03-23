@@ -18,10 +18,8 @@ namespace Clinician.Services.Impl
         private IEnumerable<BloodPressureSampleModel> BloodPressure(IEnumerable<HealthSample> samples)
         {
             var type = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.BloodPressure)?.FirstOrDefault();
-            var diastolic = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.BloodPressure)
-                .FirstOrDefault(t => t.Contains(nameof(BloodPressureSampleModel.Diastolic)));
-            var systolic = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.BloodPressure)
-                .FirstOrDefault(t => t.Contains(nameof(BloodPressureSampleModel.Systolic)));
+            var diastolic = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.BloodPressure).FirstOrDefault(t => t.Contains("diastolic"));
+            var systolic = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.BloodPressure).FirstOrDefault(t => t.Contains("systolic"));
 
             var model = samples
                 .Where(s => s.Type == type)
