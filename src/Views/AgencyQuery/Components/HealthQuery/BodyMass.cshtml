@@ -4,12 +4,18 @@
 <table class="table table-striped">
     <thead>
     <tr>
-        <th>Date</th>
-        <th>Reading</th>
+        <th class="text-center">Date</th>
+        <th class="text-center">Reading</th>
     </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model)
+        @if (!Model.Any())
+    {
+        <tr>
+            <td class="text-center" colspan="2"><span class="text-muted">No data available</span></td>
+        </tr>
+}
+        @foreach (var item in Model)
     {
         <tr>
             <td>@Html.DisplayFor(m => item.From)</td>
@@ -17,42 +23,46 @@
                 <span>@Html.DisplayFor(m => item.Kg)</span>
             </td>
         </tr>
-    }
+}
     </tbody>
 </table>
 
-@Html.Partial("_ChartingScripts")
+@if (Model.Any())
+{
+    @Html.Partial("_ChartingScripts")
 
-<div id="@SampleDataTypes.BodyMass" class="ct-chart ct-perfect-fifth"></div>
+    <div id="@SampleDataTypes.BodyMass" class="ct-chart ct-perfect-fifth"></div>
 
-<script type="text/javascript">
+    <script type="text/javascript">
 
-    var data = @Json.Serialize(new[]
-               {
-                   new { name = nameof(BodyMassSampleModel.Kg), data = @Model.Select(d => new { x = d.From.ToString("s"), y = d.Kg })},
-               }, new JsonSerializerSettings() { Formatting = Formatting.Indented, });
+        var data = @Json.Serialize(new[]
+                   {
+                       new {name = nameof(BodyMassSampleModel.Kg), data = @Model.Select(d => new {x = d.From.ToString("s"), y = d.Kg})},
+                   }, new JsonSerializerSettings() {Formatting = Formatting.Indented,});
 
-    var chart = new Chartist.Line('#@SampleDataTypes.BodyMass',
-        {
-            series: data
-        },
-        {
-            axisY: {
-                onlyInteger: true,
-                offset: 10
+        var chart = new Chartist.Line('#@SampleDataTypes.BodyMass',
+            {
+                series: data
             },
-            axisX: {
-            },
-            showArea: true,
-            plugins: [
-            ]
-        });
-
-    chart.on('draw', function(context) {
-        if(context.type === 'point') {
-            context.element.attr({
+            {
+                axisY: {
+                    onlyInteger: true,
+                    offset: 10
+                },
+                axisX: {
+                },
+                showArea: true,
+                plugins: [
+                ]
             });
-        }
-    });
 
-</script>
+        chart.on('draw',
+            function(context) {
+                if (context.type === 'point') {
+                    context.element.attr({
+                    });
+                }
+            });
+
+    </script>
+}
