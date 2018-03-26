@@ -115,7 +115,7 @@ namespace Clinician.Services.Impl
 
         private IEnumerable<PhysicalActivitySampleModel> PhysicalActivity(IEnumerable<HealthSample> samples)
         {
-            var type = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.Height)?.FirstOrDefault();
+            var type = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.PhysicalActivity)?.FirstOrDefault();
 
             var model = samples
                 .Where(s => s.Type == type)
