@@ -10,7 +10,7 @@ namespace Clinician.Models
         [Required]
         public DateTimeOffset From { get; set; }
         
-        [DisplayFormat(DataFormatString = "{0:N} Beats per Seconds")]
+        [DisplayFormat(DataFormatString = "{0:D} Beats per Minute")]
         [Required]
         public decimal BeatsPerSecond { get; set; }
     }

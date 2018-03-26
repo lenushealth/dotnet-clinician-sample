@@ -11,6 +11,7 @@
         <h1>
             @await (Component.InvokeAsync<AgencySubjectQueryDateFilter>(new { agencySubject = @Model.AgencySubject }))
         </h1>
+        <span>Between <strong>@Html.DisplayFor(m => m.Parameters.From)</strong> and <strong>@Html.DisplayFor(m => m.Parameters.To)</strong></span>
     </div>
 </div>
 <div class="row">
