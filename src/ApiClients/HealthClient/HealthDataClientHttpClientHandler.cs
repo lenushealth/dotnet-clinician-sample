@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -22,9 +21,9 @@ namespace Clinician.ApiClients.HealthClient
             this.logger = logger;
         }
 
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+            CancellationToken cancellationToken)
         {
-            // See if the request has an authorize header
             var auth = request.Headers.Authorization;
             if (auth != null)
             {
@@ -41,7 +40,8 @@ namespace Clinician.ApiClients.HealthClient
             var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
             if (!response.IsSuccessStatusCode)
             {
-                if (response.Content != null && response.Content.Headers.ContentType.MediaType.Equals("application/problem+json"))
+                if (response.Content != null &&
+                    response.Content.Headers.ContentType.MediaType.Equals("application/problem+json"))
                 {
                     var errorResponse = await response.Content.ReadAsStringAsync();
 
@@ -57,16 +57,12 @@ namespace Clinician.ApiClients.HealthClient
                     }
                 }
 
-                if (this.logger.IsEnabled(LogLevel.Error) && response.Content != null)
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    this.logger.LogError(content);
-                }
-
+                var content = await response.Content.ReadAsStringAsync();
+                this.logger.LogError(content);
                 response.EnsureSuccessStatusCode();
             }
-            return response;
 
+            return response;
         }
     }
 }
