@@ -30,7 +30,7 @@ namespace Clinician.ApiClients.AgencyClient
         public string GivenName => this.FirstOrDefault(c => c.Type == JwtClaimTypes.GivenName)?.Value;
         public string FamilyName => this.FirstOrDefault(c => c.Type == JwtClaimTypes.FamilyName)?.Value;
         public string Name => this.FirstOrDefault(c => c.Type == JwtClaimTypes.Name)?.Value;
-        public string Subject => this.FirstOrDefault(c => c.Type == "pseudo_sub")?.Value;
+        public string Subject => this.FirstOrDefault(c => c.Type == "sub")?.Value;
 
         public IList<HealthScopeItem> HealthDataScopes => this.Where(x => x.Type == "scope" && x.Value.StartsWith("read.")).Select(s => new HealthScopeItem(s.Value)).ToList();
     }
@@ -40,13 +40,13 @@ namespace Clinician.ApiClients.AgencyClient
         public AgencySubjectQueryTokenRequest(bool includeAll, IEnumerable<Guid> included = null, IEnumerable<Guid> excluded = null)
         {
             this.IncludeAll = includeAll;
-            this.SpecificallyIncludedPseudoSubs = included ?? Enumerable.Empty<Guid>();
-            this.SpecificallyExcludedPseudoSubs = excluded?? Enumerable.Empty<Guid>();
+            this.SpecificallyIncludedSubs = included ?? Enumerable.Empty<Guid>();
+            this.SpecificallyExcludedSubs = excluded?? Enumerable.Empty<Guid>();
         }
 
         public bool IncludeAll { get; set; }
-        public IEnumerable<Guid> SpecificallyIncludedPseudoSubs { get; set; }
-        public IEnumerable<Guid> SpecificallyExcludedPseudoSubs { get; set; }
+        public IEnumerable<Guid> SpecificallyIncludedSubs { get; set; }
+        public IEnumerable<Guid> SpecificallyExcludedSubs { get; set; }
     }
 
     public class AgencySubjectQueryTokenResponse

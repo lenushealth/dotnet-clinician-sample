@@ -76,10 +76,15 @@ namespace Clinician.Services.Impl
 
         public async Task<IEnumerable<ISampleModel>> QueryAsync(SampleDataTypes type, AgencySubjectQueryParameters parameters)
         {
-            var request = new AgencySubjectQueryTokenRequest(false, new[] {parameters.Subject});
-            var response = await this.agencyApiClient.CreateQueryAsync(request).ConfigureAwait(false);
+            var request = new AgencySubjectQueryTokenRequest(false, included: new[] {parameters.Subject});
+            var response = await this.agencyApiClient.CreateQueryAsync(request);
 
             var agencyQueryToken = response.Value;
+
+            if (string.IsNullOrWhiteSpace(agencyQueryToken))
+            {
+                throw new InvalidOperationException("Unable to complete health data query, unable to create query");
+            }
 
             var dataRequest = new HealthDataQueryRequest(parameters.From, parameters.To, this.sampleDataTypeMapper.GetHealthQueryTypesFor(type).ToArray())
             {
@@ -88,7 +93,7 @@ namespace Clinician.Services.Impl
             };
 
             var healthDataQueryResponse =
-                await this.healthDataClient.CreateQueryAsync(dataRequest, agencyQueryToken).ConfigureAwait(false);
+                await this.healthDataClient.CreateQueryAsync(dataRequest, agencyQueryToken);
 
             if (healthDataQueryResponse.IsValid())
             {
