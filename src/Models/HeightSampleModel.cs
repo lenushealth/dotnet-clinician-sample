@@ -10,7 +10,7 @@ namespace Clinician.Models
         [Required]
         public DateTimeOffset From { get; set; }
         
-        [DisplayFormat(DataFormatString = "{0:N} Metres")]
+        [DisplayFormat(DataFormatString = "{0:D} Metres")]
         [Required]
         public decimal Metres { get; set; }
     }

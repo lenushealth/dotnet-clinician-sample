@@ -18,10 +18,8 @@ namespace Clinician.Services.Impl
         private IEnumerable<BloodPressureSampleModel> BloodPressure(IEnumerable<HealthSample> samples)
         {
             var type = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.BloodPressure)?.FirstOrDefault();
-            var diastolic = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.BloodPressure)
-                .FirstOrDefault(t => t.Contains(nameof(BloodPressureSampleModel.Diastolic)));
-            var systolic = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.BloodPressure)
-                .FirstOrDefault(t => t.Contains(nameof(BloodPressureSampleModel.Systolic)));
+            var diastolic = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.BloodPressure).FirstOrDefault(t => t.Contains("diastolic"));
+            var systolic = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.BloodPressure).FirstOrDefault(t => t.Contains("systolic"));
 
             var model = samples
                 .Where(s => s.Type == type)
@@ -117,7 +115,7 @@ namespace Clinician.Services.Impl
 
         private IEnumerable<PhysicalActivitySampleModel> PhysicalActivity(IEnumerable<HealthSample> samples)
         {
-            var type = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.Height)?.FirstOrDefault();
+            var type = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.PhysicalActivity)?.FirstOrDefault();
 
             var model = samples
                 .Where(s => s.Type == type)
