@@ -11,7 +11,7 @@ namespace Clinician.Models
         BloodPressure,
         
         [SampleDataType("body_mass")] 
-        [Description("BodyMass (Weight in Kg)")]
+        [Description("BodyMass (Weight in KG)")]
         [RequiresScope("read.body_mass")]
         BodyMass,
         
