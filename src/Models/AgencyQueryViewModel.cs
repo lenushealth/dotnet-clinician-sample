@@ -10,7 +10,7 @@ namespace Clinician.Controllers
         {
             AgencySubject = agencySubject;
         }
-
+        public AgencySubjectQueryParameters Parameters { get; set; }
         public AgencySubject AgencySubject { get; set; }
         public IEnumerable<SampleDataTypes> Types { get; set; }
     }

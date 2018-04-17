@@ -10,7 +10,7 @@ namespace Clinician.Models
         [Required]
         public DateTimeOffset From { get; set; }
         
-        [DisplayFormat(DataFormatString = "{0:N} Steps")]
+        [DisplayFormat(DataFormatString = "{0:D} Steps")]
         [Required]
         public int Steps { get; set; }
     }

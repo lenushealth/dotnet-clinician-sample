@@ -48,6 +48,7 @@ namespace Clinician.Controllers
             
             var model = new AgencyQueryViewModel(agencySubject)
             {
+                Parameters = parameters,
                 Types = sampleTypes
             };
 
