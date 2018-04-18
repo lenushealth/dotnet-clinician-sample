@@ -17,122 +17,85 @@ namespace Clinician.Services.Impl
 
         private IEnumerable<BloodPressureSampleModel> BloodPressure(IEnumerable<HealthSample> samples)
         {
-            var type = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.BloodPressure)?.FirstOrDefault();
-            var diastolic = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.BloodPressure).FirstOrDefault(t => t.Contains("diastolic"));
-            var systolic = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.BloodPressure).FirstOrDefault(t => t.Contains("systolic"));
+            var types = sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.BloodPressure).ToList();
 
-            var model = samples
-                .Where(s => s.Type == type)
-                .Select(s =>
+            string TypeContaining(string s) => types.Single(t => t.Contains(s.ToLowerInvariant()));
+            
+            var correlationType = types.First();
+            var diastolicType = TypeContaining(nameof(BloodPressureSampleModel.Diastolic));
+            var systolicType = TypeContaining(nameof(BloodPressureSampleModel.Systolic));
+            
+            decimal QuantityValue(IEnumerable<HealthSample> healthSamples, string type) => 
+                healthSamples.Single(hs => hs.Type == type).QuantityValue; 
+            
+            return ConstructModel(samples, correlationType, hs =>
+            {
+                if (hs.CorrelationObjects?.Count() != 2)
                 {
-                    if (s.CorrelationObjects != null && s.CorrelationObjects.Count() == 2)
-                    {
-                        var reading = new BloodPressureSampleModel()
-                        {
-                            From = s.DateRange.LowerBound,
-                            Diastolic = s.CorrelationObjects.SingleOrDefault(x => x.Type == diastolic)
-                                .QuantityValue,
-                            Systolic = s.CorrelationObjects.SingleOrDefault(x => x.Type == systolic)
-                                .QuantityValue
-                        };
-                        return reading;
-                    }
-
                     return null;
-                })
-                .Where(s => s != null)
-                .OrderByDescending(s => s.From)
-                .ToList();
+                }
 
-            return model;
+                return new BloodPressureSampleModel
+                {
+                    From = hs.DateRange.LowerBound,
+                    Diastolic = QuantityValue(hs.CorrelationObjects, diastolicType),
+                    Systolic = QuantityValue(hs.CorrelationObjects, systolicType),
+                };
+            });
         }
 
         private IEnumerable<BodyMassSampleModel> BodyMass(IEnumerable<HealthSample> samples)
         {
-            var type = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.BodyMass)?.FirstOrDefault();
-
-            var model = samples
-                .Where(s => s.Type == type)
-                .Select(s =>
-                {
-                    var reading = new BodyMassSampleModel
-                    {
-                        From = s.DateRange.LowerBound,
-                        Kg = s.QuantityValue
-                    };
-                    return reading;
-                })
-                .Where(s => s != null)
-                .OrderByDescending(s => s.From)
-                .ToList();
-
-            return model;
+            return ConstructModel(samples, FirstType(SampleDataTypes.BodyMass), hs => new BodyMassSampleModel
+            {
+                From = hs.DateRange.LowerBound,
+                Kg = hs.QuantityValue
+            });
         }
 
         private IEnumerable<HeartRateSampleModel> HeartRate(IEnumerable<HealthSample> samples)
         {
-            var type = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.HeartRate)?.FirstOrDefault();
-
-            var model = samples
-                .Where(s => s.Type == type)
-                .Select(s =>
-                {
-                    var reading = new HeartRateSampleModel
-                    {
-                        From = s.DateRange.LowerBound,
-                        BeatsPerSecond = s.QuantityValue
-                    };
-                    return reading;
-                })
-                .Where(s => s != null)
-                .OrderByDescending(s => s.From)
-                .ToList();
-
-            return model;
+            return ConstructModel(samples, FirstType(SampleDataTypes.HeartRate), hs => new HeartRateSampleModel
+            {
+                From = hs.DateRange.LowerBound,
+                BeatsPerMinute = hs.QuantityValue
+            });
         }
 
         private IEnumerable<HeightSampleModel> Height(IEnumerable<HealthSample> samples)
         {
-            var type = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.Height)?.FirstOrDefault();
-
-            var model = samples
-                .Where(s => s.Type == type)
-                .Select(s =>
-                {
-                    var reading = new HeightSampleModel
-                    {
-                        From = s.DateRange.LowerBound,
-                        Metres = s.QuantityValue
-                    };
-                    return reading;
-                })
-                .Where(s => s != null)
-                .OrderByDescending(s => s.From)
-                .ToList();
-
-            return model;
+            
+            return ConstructModel(samples, FirstType(SampleDataTypes.Height), hs => new HeightSampleModel
+            {
+                From = hs.DateRange.LowerBound,
+                Metres = hs.QuantityValue
+            });
         }
 
-        private IEnumerable<PhysicalActivitySampleModel> PhysicalActivity(IEnumerable<HealthSample> samples)
+        private IEnumerable<ISampleModel> PhysicalActivity(IEnumerable<HealthSample> samples)
         {
-            var type = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.PhysicalActivity)?.FirstOrDefault();
+            return ConstructModel(samples, FirstType(SampleDataTypes.PhysicalActivity), 
+                hs => new PhysicalActivitySampleModel
+            {
+                From = hs.DateRange.LowerBound,
+                Steps = (int) Math.Round(hs.QuantityValue)
+            });
+        }
 
-            var model = samples
+        private string FirstType(SampleDataTypes sampleDataTypes)
+        {
+            return sampleDataTypeMapper.GetHealthQueryTypesFor(sampleDataTypes).First();
+        }
+
+        private static IEnumerable<TModel> ConstructModel<TModel>(IEnumerable<HealthSample> samples, string type, 
+            Func<HealthSample, TModel> factory) where TModel: ISampleModel
+        {
+            return samples
                 .Where(s => s.Type == type)
-                .Select(s =>
-                {
-                    var reading = new PhysicalActivitySampleModel
-                    {
-                        From = s.DateRange.LowerBound,
-                        Steps = (int)Math.Round(s.QuantityValue)
-                    };
-                    return reading;
-                })
+                .Select(factory)
                 .Where(s => s != null)
                 .OrderByDescending(s => s.From)
                 .ToList();
-
-            return model;
         }
 
         public IEnumerable<ISampleModel> Map(IEnumerable<HealthSample> samples, SampleDataTypes type)
