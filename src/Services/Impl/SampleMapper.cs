@@ -17,15 +17,6 @@ namespace Clinician.Services.Impl
 
         private IEnumerable<BloodPressureSampleModel> BloodPressure(IEnumerable<HealthSample> samples)
         {
-<<<<<<< HEAD
-            var type = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.BloodPressure)?.FirstOrDefault();
-            var diastolic = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.BloodPressure).FirstOrDefault(t => t.Contains("diastolic"));
-            var systolic = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.BloodPressure).FirstOrDefault(t => t.Contains("systolic"));
-
-            var model = samples
-                .Where(s => s.Type == type)
-                .Select(s =>
-=======
             var types = sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.BloodPressure).ToList();
 
             string TypeContaining(string s) => types.Single(t => t.Contains(s.ToLowerInvariant()));
@@ -40,7 +31,6 @@ namespace Clinician.Services.Impl
             return ConstructModel(samples, correlationType, hs =>
             {
                 if (hs.CorrelationObjects?.Count() != 2)
->>>>>>> develop
                 {
                     return null;
                 }
@@ -94,12 +84,8 @@ namespace Clinician.Services.Impl
 
         private string FirstType(SampleDataTypes sampleDataTypes)
         {
-<<<<<<< HEAD
-            var type = this.sampleDataTypeMapper.GetHealthQueryTypesFor(SampleDataTypes.PhysicalActivity)?.FirstOrDefault();
-=======
             return sampleDataTypeMapper.GetHealthQueryTypesFor(sampleDataTypes).First();
         }
->>>>>>> develop
 
         private static IEnumerable<TModel> ConstructModel<TModel>(IEnumerable<HealthSample> samples, string type, 
             Func<HealthSample, TModel> factory) where TModel: ISampleModel
