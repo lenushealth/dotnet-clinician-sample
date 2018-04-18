@@ -30,7 +30,11 @@ namespace Clinician.ApiClients.AgencyClient
         public string GivenName => this.FirstOrDefault(c => c.Type == JwtClaimTypes.GivenName)?.Value;
         public string FamilyName => this.FirstOrDefault(c => c.Type == JwtClaimTypes.FamilyName)?.Value;
         public string Name => this.FirstOrDefault(c => c.Type == JwtClaimTypes.Name)?.Value;
+<<<<<<< HEAD
         public string Subject => this.FirstOrDefault(c => c.Type == "sub")?.Value;
+=======
+        public string Subject => this.FirstOrDefault(c => c.Type == JwtClaimTypes.Subject)?.Value;
+>>>>>>> develop
 
         public IList<HealthScopeItem> HealthDataScopes => this.Where(x => x.Type == "scope" && x.Value.StartsWith("read.")).Select(s => new HealthScopeItem(s.Value)).ToList();
     }

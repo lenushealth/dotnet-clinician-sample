@@ -8,6 +8,7 @@ using Clinician.ApiClients.AgencyClient;
 using Clinician.ApiClients.HealthClient;
 using Clinician.ApiClients.HealthClient.Models;
 using Clinician.Models;
+using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -43,7 +44,7 @@ namespace Clinician.Services.Impl
         {
             var identity = (this.httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity);
             var currentSubject = identity.FindFirst(JwtRegisteredClaimNames.Sid).Value;
-            return $"pseudo_sub-{currentSubject}-{subject}";
+            return $"{JwtClaimTypes.Subject}-{currentSubject}-{subject}";
         }
 
         public async Task<IEnumerable<AgencySubject>> GetAgencySubjectsAsync()

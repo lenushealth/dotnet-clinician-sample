@@ -20,7 +20,7 @@
         <tr>
             <td>@Html.DisplayFor(m => item.From)</td>
             <td>
-                <span>@Html.DisplayFor(m => item.BeatsPerSecond)</span>
+                <span>@Html.DisplayFor(m => item.BeatsPerMinute)</span>
             </td>
         </tr>
 }
@@ -36,7 +36,7 @@
 
         var data = @Json.Serialize(new[]
                    {
-                       new {name = nameof(HeartRateSampleModel.BeatsPerSecond), data = @Model.Select(d => new {x = d.From.ToString("s"), y = d.BeatsPerSecond})},
+                       new {name = nameof(HeartRateSampleModel.BeatsPerMinute), data = @Model.Select(d => new {x = d.From.ToString("s"), y = d.BeatsPerMinute})},
                    }, new JsonSerializerSettings() {Formatting = Formatting.Indented,});
 
         var chart = new Chartist.Line('#@SampleDataTypes.HeartRate',
