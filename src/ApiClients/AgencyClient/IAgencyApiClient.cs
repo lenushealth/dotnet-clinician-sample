@@ -57,10 +57,10 @@ namespace Clinician.ApiClients.AgencyClient
     [Headers("Authorization: Bearer")]
     public interface IAgencyApiClient
     {
-        [Get("/claims")]
+        [Get("/agency/claims/v1")]
         Task<IEnumerable<AgencySubject>> ResolveClaimsAsync();
 
-        [Post("/querytoken")]
+        [Post("/agency/querytoken/v1")]
         Task<AgencySubjectQueryTokenResponse> CreateQueryAsync([Body(BodySerializationMethod.Json)] AgencySubjectQueryTokenRequest request);
     }
 }
