@@ -98,7 +98,7 @@
               "OpenIdConnect:ClientSecret": "[parameters('clientSecret')]",
               "HealthDataClient:BaseUri" : "[parameters('healthDataClientBaseUri')]",
               "Agency:AgencyRequestUri" : "[concat(parameters('authority'), '/agency/invite')]",
-              "Agency:AgencyApiBaseUri" : "[concat(parameters('authority'), '/api/agency')]",
+              "Agency:AgencyApiBaseUri" : "[concat(parameters('authority'), '/agency')]",
               "WEBSITE_TIME_ZONE": "GMT Standard Time"
           }
         } 

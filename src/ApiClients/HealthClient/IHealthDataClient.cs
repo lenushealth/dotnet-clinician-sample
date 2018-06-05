@@ -16,5 +16,6 @@ namespace Clinician.ApiClients.HealthClient
 
         [Post("/sample/v1")]
         Task SubmitBloodPressureMeasurementAsync([Body(BodySerializationMethod.Json)] params HealthSample[] samples);
+ 
     }
 }
