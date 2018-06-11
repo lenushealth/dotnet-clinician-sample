@@ -42,7 +42,11 @@
     "healthDataClientBaseUri": {
       "type": "string",
       "defaultValue": "https://data.dhi-dse.scot"
-    }
+    },
+    "agencyClientBaseUri": {
+      "type": "string",
+      "defaultValue": "https://data.dhi-dse.scot/agency"
+    }    
   },
   "resources": [
     {
@@ -98,7 +102,7 @@
               "OpenIdConnect:ClientSecret": "[parameters('clientSecret')]",
               "HealthDataClient:BaseUri" : "[parameters('healthDataClientBaseUri')]",
               "Agency:AgencyRequestUri" : "[concat(parameters('authority'), '/agency/invite')]",
-              "Agency:AgencyApiBaseUri" : "[concat(parameters('authority'), '/api/agency')]",
+              "Agency:AgencyApiBaseUri" : "[parameters('agencyClientBaseUri')]",
               "WEBSITE_TIME_ZONE": "GMT Standard Time"
           }
         } 
