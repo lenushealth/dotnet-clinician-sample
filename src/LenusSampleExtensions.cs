@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using Clinician.Services.Impl;
 using IdentityModel;
 using Microsoft.IdentityModel.Tokens;
@@ -21,6 +22,7 @@ using Refit;
 using Clinician.Controllers;
 using Clinician.Models;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 
 namespace Clinician
 {
@@ -109,7 +111,19 @@ namespace Clinician
                     o.Scope.Add("agency_api");
 
                     // Ensures the "role" claim is mapped into the ClaimsIdentity
-                    o.ClaimActions.Add(new JsonKeyClaimAction(JwtClaimTypes.Role, JwtClaimTypes.Role, JwtClaimTypes.Role));
+                    o.Events.OnUserInformationReceived = context =>
+                    {
+                        if (context.User.TryGetValue(JwtClaimTypes.Role, out var role))
+                        {
+                            var roleNames = role.Type == JTokenType.Array 
+                                ? role.Select(x => (string)x) 
+                                : new[] { (string)role };
+                            var claims = roleNames.Select(rn => new Claim(JwtClaimTypes.Role, rn));
+                            var id = context.Principal.Identity as ClaimsIdentity;
+                            id?.AddClaims(claims);
+                        }
+                        return Task.CompletedTask;
+                    };
                 })
                 ;
 
