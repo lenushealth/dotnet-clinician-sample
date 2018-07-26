@@ -45,7 +45,7 @@
     },
     "agencyClientBaseUri": {
       "type": "string",
-      "defaultValue": "https://data.dhi-dse.scot/agency"
+      "defaultValue": "https://data.dhi-dse.scot/agency/v1"
     }    
   },
   "resources": [
