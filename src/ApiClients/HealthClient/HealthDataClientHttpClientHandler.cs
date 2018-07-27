@@ -27,21 +27,22 @@ namespace Clinician.ApiClients.HealthClient
             var auth = request.Headers.Authorization;
             if (auth != null)
             {
-                var token = await this.accessTokenAccessor.GetAccessTokenAsync().ConfigureAwait(false);
+                var token = await accessTokenAccessor.GetAccessTokenAsync().ConfigureAwait(false);
                 request.Headers.Authorization = new AuthenticationHeaderValue(auth.Scheme, token);
             }
 
-            if (this.logger.IsEnabled(LogLevel.Debug) && request.Content != null)
+            if (logger.IsEnabled(LogLevel.Debug) && request.Content != null)
             {
                 var requestString = await request.Content.ReadAsStringAsync();
-                this.logger.LogDebug(requestString);
+                logger.LogDebug(requestString);
             }
 
             var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
             if (!response.IsSuccessStatusCode)
             {
                 if (response.Content != null &&
-                    response.Content.Headers.ContentType.MediaType.Equals("application/problem+json"))
+                    response.Content.Headers.ContentType?.MediaType.Equals("application/problem+json") == true
+                )
                 {
                     var errorResponse = await response.Content.ReadAsStringAsync();
 
@@ -58,7 +59,7 @@ namespace Clinician.ApiClients.HealthClient
                 }
 
                 var content = await response.Content.ReadAsStringAsync();
-                this.logger.LogError(content);
+                logger.LogError(content);
                 response.EnsureSuccessStatusCode();
             }
 
