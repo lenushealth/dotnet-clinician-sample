@@ -93,20 +93,6 @@ namespace Clinician
                     /* I want to read email address */
                     o.Scope.Add("email");
 
-                    /* I want to read blood pressure data */
-                    o.Scope.Add("read.blood_pressure");
-                    o.Scope.Add("read.blood_pressure.blood_pressure_systolic");
-                    o.Scope.Add("read.blood_pressure.blood_pressure_diastolic");
-                    
-                    /* I want to read body mass data */
-                    o.Scope.Add("read.body_mass");
-
-                    /* I want to read heart rate data */
-                    o.Scope.Add("read.heart_rate");
-
-                    /* I want to read height data */
-                    o.Scope.Add("read.height");
-
                     /* I want to act as an agent */
                     o.Scope.Add("agency_api");
 
