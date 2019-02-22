@@ -40,7 +40,7 @@
     </nav>
 
     <div class="container body-content">
-        @Html.Partial("_VerifyAgentRole")
+        @await Html.PartialAsync("_VerifyAgentRole")
         @RenderBody()
         <hr />
         <footer>

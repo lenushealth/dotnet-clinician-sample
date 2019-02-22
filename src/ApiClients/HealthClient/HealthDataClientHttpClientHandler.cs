@@ -3,14 +3,14 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using Clinician.ApiClients.HealthClient.Models;
 using Clinician.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace Clinician.ApiClients.HealthClient
 {
-    public class HealthDataClientHttpClientHandler : HttpClientHandler
+    public class HealthDataClientHttpClientHandler : DelegatingHandler
     {
         private readonly IAccessTokenAccessor accessTokenAccessor;
         private readonly ILogger<HealthDataClientHttpClientHandler> logger;

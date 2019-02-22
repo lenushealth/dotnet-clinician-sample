@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Threading.Tasks;
 using Clinician.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -12,17 +12,14 @@ using System.Linq;
 using Clinician.Services.Impl;
 using IdentityModel;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.OAuth.Claims;
 using Microsoft.Extensions.Options;
 using Clinician.ApiClients.HealthClient;
 using System.Net.Http;
 using System.Security.Claims;
 using Clinician.ApiClients.AgencyClient;
 using Refit;
-using Clinician.Controllers;
-using Clinician.Models;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using Polly;
 
 namespace Clinician
 {
@@ -157,15 +154,21 @@ namespace Clinician
 
             serviceCollection.Configure<HealthDataClientOptions>(configuration.GetSection("HealthDataClient"));
 
-            serviceCollection.AddScoped(s =>
-            {
-                var options = s.GetRequiredService<IOptions<HealthDataClientOptions>>().Value;
-                var client = new HttpClient(new HealthDataClientHttpClientHandler(s.GetRequiredService<IAccessTokenAccessor>(), s.GetService<ILogger<HealthDataClientHttpClientHandler>>()))
+            serviceCollection.AddTransient(typeof(HealthDataClientHttpClientHandler));
+
+            serviceCollection.AddRefitClient<IHealthDataClient>()
+                .ConfigureHttpClient(c =>
                 {
-                    BaseAddress = options.BaseUri
-                };
-                return RestService.For<IHealthDataClient>(client);
-            });
+                    var options = configuration.GetSection("HealthDataClient").Get<HealthDataClientOptions>();
+
+                    c.BaseAddress = options.BaseUri;
+                })
+                .AddHttpMessageHandler<HealthDataClientHttpClientHandler>()
+                .AddTransientHttpErrorPolicy(
+                    builder => builder.WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+                    )
+                );
+
             return serviceCollection;
         }
     }

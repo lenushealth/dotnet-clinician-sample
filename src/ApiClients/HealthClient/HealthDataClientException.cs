@@ -1,5 +1,5 @@
 ﻿using System;
-using Clinician.ApiClients.HealthClient.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Clinician.ApiClients.HealthClient
 {
