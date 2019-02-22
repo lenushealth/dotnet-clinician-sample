@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Clinician.ApiClients.HealthClient;
-using Clinician.ApiClients.HealthClient.Models;
 using Clinician.Models;
 using Clinician.Services;
 using Microsoft.AspNetCore.Mvc;

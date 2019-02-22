@@ -4,8 +4,8 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Clinician.ApiClients.HealthClient;
-using Clinician.ApiClients.HealthClient.Models;
 using Clinician.Services;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace Clinician.ApiClients.AgencyClient

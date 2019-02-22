@@ -28,7 +28,7 @@
 </table>
 @if (Model.Any())
 {
-    @Html.Partial("_ChartingScripts")
+    @await Html.PartialAsync("_ChartingScripts")
 
     <div id="@SampleDataTypes.HeartRate" class="ct-chart ct-perfect-fifth"></div>
 

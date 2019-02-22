@@ -11,6 +11,6 @@ namespace Clinician.ApiClients.AgencyClient
         Task<IEnumerable<AgencySubject>> ResolveClaimsAsync();
 
         [Post("/querytoken")]
-        Task<AgencySubjectQueryTokenResponse> CreateQueryAsync([Body(BodySerializationMethod.Json)] AgencySubjectQueryTokenRequest request);
+        Task<AgencySubjectQueryTokenResponse> CreateQueryAsync([Body(BodySerializationMethod.Serialized)] AgencySubjectQueryTokenRequest request);
     }
 }
