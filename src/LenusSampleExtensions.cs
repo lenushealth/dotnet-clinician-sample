@@ -140,22 +140,27 @@ namespace Clinician
         {
             serviceCollection.AddOptions();
             serviceCollection.Configure<HealthPlatformAgencyOptions>(configuration.GetSection("Agency"));
-            
+
             serviceCollection.AddSingleton<ISampleMapper, SampleMapper>();
             
             serviceCollection.AddSingleton<ISampleDataTypeMapper, SampleDataTypeMapper>();
 
             serviceCollection.AddScoped<IAgencySubjectQueryService, AgencySubjectQueryService>();
 
-            serviceCollection.AddScoped(s =>
-            {
-                var options = s.GetRequiredService<IOptions<HealthPlatformAgencyOptions>>().Value;
-                var client = new HttpClient(new AgencyApiClientHttpClientHandler(s.GetRequiredService<IAccessTokenAccessor>()))
+            serviceCollection.AddTransient(typeof(AgencyApiClientHttpClientHandler));
+
+            serviceCollection.AddRefitClient<IAgencyApiClient>()
+                .ConfigureHttpClient(c =>
                 {
-                    BaseAddress = options.AgencyApiBaseUri
-                };
-                return RestService.For<IAgencyApiClient>(client);
-            });
+                    var options = configuration.GetSection("Agency").Get<HealthPlatformAgencyOptions>();
+
+                    c.BaseAddress = options.AgencyApiBaseUri;
+                })
+                .AddHttpMessageHandler<AgencyApiClientHttpClientHandler>()
+                .AddTransientHttpErrorPolicy(
+                    builder => builder.WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+                    )
+                );
 
             return serviceCollection;
         }
@@ -165,8 +170,6 @@ namespace Clinician
             serviceCollection.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             serviceCollection.AddSingleton<IAccessTokenAccessor, AccessTokenAccessor>();
             serviceCollection.AddOptions();
-
-            serviceCollection.Configure<HealthDataClientOptions>(configuration.GetSection("HealthDataClient"));
 
             serviceCollection.AddTransient(typeof(HealthDataClientHttpClientHandler));
 

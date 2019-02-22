@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace Clinician.ApiClients.AgencyClient
 {
-    public class AgencyApiClientHttpClientHandler : HttpClientHandler
+    public class AgencyApiClientHttpClientHandler : DelegatingHandler
     {
         private readonly IAccessTokenAccessor accessTokenAccessor;
 
