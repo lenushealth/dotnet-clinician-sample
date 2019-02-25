@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Threading.Tasks;
 using Clinician.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -12,17 +12,14 @@ using System.Linq;
 using Clinician.Services.Impl;
 using IdentityModel;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.OAuth.Claims;
 using Microsoft.Extensions.Options;
 using Clinician.ApiClients.HealthClient;
 using System.Net.Http;
 using System.Security.Claims;
 using Clinician.ApiClients.AgencyClient;
 using Refit;
-using Clinician.Controllers;
-using Clinician.Models;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using Polly;
 
 namespace Clinician
 {
@@ -93,20 +90,6 @@ namespace Clinician
                     /* I want to read email address */
                     o.Scope.Add("email");
 
-                    /* I want to read blood pressure data */
-                    o.Scope.Add("read.blood_pressure");
-                    o.Scope.Add("read.blood_pressure.blood_pressure_systolic");
-                    o.Scope.Add("read.blood_pressure.blood_pressure_diastolic");
-                    
-                    /* I want to read body mass data */
-                    o.Scope.Add("read.body_mass");
-
-                    /* I want to read heart rate data */
-                    o.Scope.Add("read.heart_rate");
-
-                    /* I want to read height data */
-                    o.Scope.Add("read.height");
-
                     /* I want to act as an agent */
                     o.Scope.Add("agency_api");
 
@@ -143,22 +126,27 @@ namespace Clinician
         {
             serviceCollection.AddOptions();
             serviceCollection.Configure<HealthPlatformAgencyOptions>(configuration.GetSection("Agency"));
-            
+
             serviceCollection.AddSingleton<ISampleMapper, SampleMapper>();
             
             serviceCollection.AddSingleton<ISampleDataTypeMapper, SampleDataTypeMapper>();
 
             serviceCollection.AddScoped<IAgencySubjectQueryService, AgencySubjectQueryService>();
 
-            serviceCollection.AddScoped(s =>
-            {
-                var options = s.GetRequiredService<IOptions<HealthPlatformAgencyOptions>>().Value;
-                var client = new HttpClient(new AgencyApiClientHttpClientHandler(s.GetRequiredService<IAccessTokenAccessor>()))
+            serviceCollection.AddTransient(typeof(AgencyApiClientHttpClientHandler));
+
+            serviceCollection.AddRefitClient<IAgencyApiClient>()
+                .ConfigureHttpClient(c =>
                 {
-                    BaseAddress = options.AgencyApiBaseUri
-                };
-                return RestService.For<IAgencyApiClient>(client);
-            });
+                    var options = configuration.GetSection("Agency").Get<HealthPlatformAgencyOptions>();
+
+                    c.BaseAddress = options.AgencyApiBaseUri;
+                })
+                .AddHttpMessageHandler<AgencyApiClientHttpClientHandler>()
+                .AddTransientHttpErrorPolicy(
+                    builder => builder.WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+                    )
+                );
 
             return serviceCollection;
         }
@@ -169,17 +157,21 @@ namespace Clinician
             serviceCollection.AddSingleton<IAccessTokenAccessor, AccessTokenAccessor>();
             serviceCollection.AddOptions();
 
-            serviceCollection.Configure<HealthDataClientOptions>(configuration.GetSection("HealthDataClient"));
+            serviceCollection.AddTransient(typeof(HealthDataClientHttpClientHandler));
 
-            serviceCollection.AddScoped(s =>
-            {
-                var options = s.GetRequiredService<IOptions<HealthDataClientOptions>>().Value;
-                var client = new HttpClient(new HealthDataClientHttpClientHandler(s.GetRequiredService<IAccessTokenAccessor>(), s.GetService<ILogger<HealthDataClientHttpClientHandler>>()))
+            serviceCollection.AddRefitClient<IHealthDataClient>()
+                .ConfigureHttpClient(c =>
                 {
-                    BaseAddress = options.BaseUri
-                };
-                return RestService.For<IHealthDataClient>(client);
-            });
+                    var options = configuration.GetSection("HealthDataClient").Get<HealthDataClientOptions>();
+
+                    c.BaseAddress = options.BaseUri;
+                })
+                .AddHttpMessageHandler<HealthDataClientHttpClientHandler>()
+                .AddTransientHttpErrorPolicy(
+                    builder => builder.WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+                    )
+                );
+
             return serviceCollection;
         }
     }

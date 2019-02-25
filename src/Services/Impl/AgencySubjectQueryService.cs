@@ -84,31 +84,26 @@ namespace Clinician.Services.Impl
 
             if (string.IsNullOrWhiteSpace(agencyQueryToken))
             {
-                throw new InvalidOperationException("Unable to complete health data query, unable to create query");
+                throw new InvalidOperationException("Unable to complete health data query, agency-query-token is missing");
             }
 
-            var dataRequest = new HealthDataQueryRequest(parameters.From, parameters.To, this.sampleDataTypeMapper.GetHealthQueryTypesFor(type).ToArray())
+            var requestDateParams = new Dictionary<string, object>
             {
-                OrderDirection = HealthDataQueryRequest.OrderDirectionOptions.Descending,
-                OrderProperty = HealthDataQueryRequest.OrderPropertyOptions.EndDate
+                {"RangeOfStartDate", new HealthSample.HealthSampleDateRange(parameters.From, parameters.To)},
             };
 
-            var healthDataQueryResponse =
-                await this.healthDataClient.CreateQueryAsync(dataRequest, agencyQueryToken);
+            var queryResult = await this.healthDataClient.ExecuteQueryAsync(
+                    agencyQueryToken,
+                    this.sampleDataTypeMapper.GetHealthQueryTypesFor(type).ToArray(), 
+                    requestDateParams,
+                    HealthDataQueryRequest.OrderPropertyOptions.EndDate,
+                    HealthDataQueryRequest.OrderDirectionOptions.Descending,
+                    parameters.Take)
+                .ConfigureAwait(false);
 
-            if (healthDataQueryResponse.IsValid())
-            {
+            var model = this.sampleMapper.Map(queryResult.Datas, type);
 
-                var data = await this.healthDataClient
-                    .ExecuteQueryAsync(healthDataQueryResponse.QueryKey, parameters.Take, 0)
-                    .ConfigureAwait(false);
-
-                var model = this.sampleMapper.Map(data, type);
-
-                return model;
-            }
-
-            throw new InvalidOperationException("Unable to complete health data query, no query key was returned");
+            return model;
         }
     }
 }
