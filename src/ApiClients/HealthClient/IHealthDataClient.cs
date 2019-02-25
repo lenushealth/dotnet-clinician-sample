@@ -5,10 +5,10 @@ using Refit;
 
 namespace Clinician.ApiClients.HealthClient
 {
-    [Headers("Authorization: Bearer", "api-version: 2.0")]
+    [Headers("Authorization: Bearer")]
     public interface IHealthDataClient
     {
-        [Get("/api/sample")]
+        [Get("/query/v1/sample")]
         Task<HealthSamplesDto> ExecuteQueryAsync(
             [Header("agency-query-token")] string agencyQueryToken,
             [Query(CollectionFormat.Multi)] IEnumerable<string> types,
