@@ -8,7 +8,7 @@ namespace Clinician.ApiClients.HealthClient
     [Headers("Authorization: Bearer")]
     public interface IHealthDataClient
     {
-        [Get("/query/v1/sample")]
+        [Get("/sample/v1")]
         Task<HealthSamplesDto> ExecuteQueryAsync(
             [Header("agency-query-token")] string agencyQueryToken,
             [Query(CollectionFormat.Multi)] IEnumerable<string> types,
