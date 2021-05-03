@@ -8,18 +8,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using Clinician.Services.Impl;
 using IdentityModel;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Extensions.Options;
 using Clinician.ApiClients.HealthClient;
-using System.Net.Http;
 using System.Security.Claims;
 using Clinician.ApiClients.AgencyClient;
 using Refit;
-using Newtonsoft.Json.Linq;
 using Polly;
+using System.Linq;
 
 namespace Clinician
 {
@@ -35,12 +32,7 @@ namespace Clinician
                     o.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     o.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
                 })
-                .AddCookie(o =>
-                {
-                    //o.AccessDeniedPath = "/error";
-                    //o.LoginPath = "/login";
-                    //o.LogoutPath = "/logout";
-                })
+                .AddCookie()
                 .AddOpenIdConnect(o =>
                 {
                     configuration.GetSection("OpenIdConnect").Bind(o);
@@ -48,6 +40,7 @@ namespace Clinician
                     JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
                     JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
                     JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Add(JwtClaimTypes.Subject, ClaimTypes.NameIdentifier);
+                    JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Add(JwtClaimTypes.Role, JwtClaimTypes.Role);
 
                     o.TokenValidationParameters = new TokenValidationParameters()
                     {
@@ -64,7 +57,7 @@ namespace Clinician
                     o.GetClaimsFromUserInfoEndpoint = true;
                     
                     /* use the authorization_code flow */
-                    o.ResponseType = OpenIdConnectResponseType.Code;
+                    o.ResponseType = OpenIdConnectResponseType.CodeIdToken;
 
                     o.Events.OnRemoteFailure += ctx =>
                     {
@@ -96,19 +89,16 @@ namespace Clinician
                     // Ensures the "role" claim is mapped into the ClaimsIdentity
                     o.Events.OnUserInformationReceived = context =>
                     {
-                        if (context.User.TryGetValue(JwtClaimTypes.Role, out var role))
-                        {
-                            var roleNames = role.Type == JTokenType.Array 
-                                ? role.Select(x => (string)x) 
-                                : new[] { (string)role };
-                            var claims = roleNames.Select(rn => new Claim(JwtClaimTypes.Role, rn));
-                            var id = context.Principal.Identity as ClaimsIdentity;
-                            id?.AddClaims(claims);
-                        }
+                        var role = context.User.RootElement.GetProperty(JwtClaimTypes.Role);
+                        var roleNames = role.ValueKind == System.Text.Json.JsonValueKind.Array ? role.EnumerateArray().Select(e => e.GetString()) : new[] { role.GetString() };
+
+                        var claims = roleNames.Select(rn => new Claim(JwtClaimTypes.Role, rn)).ToList();
+                        var id = context.Principal.Identity as ClaimsIdentity;
+                        id?.AddClaims(claims);
+
                         return Task.CompletedTask;
                     };
-                })
-                ;
+                });
 
             return serviceCollection;
         }

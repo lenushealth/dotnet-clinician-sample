@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Clinician.ApiClients.AgencyClient;
 using Clinician.Models;
 
 namespace Clinician.Services.Impl

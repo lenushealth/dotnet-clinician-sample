@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>Clinician</RootNamespace>
     <UserSecretsId>4dc66c5b-6e6f-43d7-9aaa-c54535da7bf6</UserSecretsId>
   </PropertyGroup>
@@ -14,12 +14,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Humanizer.Core.uk" Version="2.2.0" />
-    <PackageReference Include="IdentityModel" Version="3.3.1" />
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.8" />
-    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="2.1.1" />
-    <PackageReference Include="Refit" Version="4.6.90" />
-    <PackageReference Include="Refit.HttpClientFactory" Version="4.6.90" />
+    <PackageReference Include="Humanizer.Core.uk" Version="2.9.9" />
+    <PackageReference Include="IdentityModel" Version="5.1.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.15.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="3.1.14" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="3.1.14" />
+    <PackageReference Include="Refit" Version="5.2.4" />
+    <PackageReference Include="Refit.HttpClientFactory" Version="5.2.4" />
   </ItemGroup>
 
   <ItemGroup>

@@ -37,7 +37,7 @@
         var data = @Json.Serialize(new[]
                    {
                        new {name = nameof(HeartRateSampleModel.BeatsPerMinute), data = @Model.Select(d => new {x = d.From.ToString("s"), y = d.BeatsPerMinute})},
-                   }, new JsonSerializerSettings() {Formatting = Formatting.Indented,});
+                   });
 
         var chart = new Chartist.Line('#@SampleDataTypes.HeartRate',
             {

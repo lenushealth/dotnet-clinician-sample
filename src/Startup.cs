@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Globalization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Newtonsoft.Json;
 using Clinician.Controllers;
+using Microsoft.Extensions.Hosting;
+using System.Text.Json;
 
 namespace Clinician
 {
@@ -24,7 +24,12 @@ namespace Clinician
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddLocalization();
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(o =>
+            {
+                o.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                o.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+            });
+            
             services.Configure<RouteOptions>(r =>
             {
                 r.LowercaseUrls = true;
@@ -37,17 +42,11 @@ namespace Clinician
             services.AddAgencyServices(this.Configuration);
 
             services.AddMemoryCache();
-
-            services.Configure<MvcJsonOptions>(o =>
-            {
-                o.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
-                o.SerializerSettings.DateParseHandling = DateParseHandling.DateTimeOffset;
-                o.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
-            });
+            services.AddApplicationInsightsTelemetry();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseAuthentication();
             app.UseRequestLocalization();
@@ -72,14 +71,12 @@ namespace Clinician
                     SupportedUICultures = new[] { gbCulture }
                 });
 
-            app.UseMvc();
-
-            //app.UseMvc(routes =>
-            //{
-            //    routes.MapRoute(
-            //        name: "default",
-            //        template: "{controller=Home}/{action=Index}/{id?}");
-            //});
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(e =>
+            {
+                e.MapDefaultControllerRoute();
+            });
         }
     }
 }
