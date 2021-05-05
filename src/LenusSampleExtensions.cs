@@ -89,12 +89,14 @@ namespace Clinician
                     // Ensures the "role" claim is mapped into the ClaimsIdentity
                     o.Events.OnUserInformationReceived = context =>
                     {
-                        var role = context.User.RootElement.GetProperty(JwtClaimTypes.Role);
-                        var roleNames = role.ValueKind == System.Text.Json.JsonValueKind.Array ? role.EnumerateArray().Select(e => e.GetString()) : new[] { role.GetString() };
+                        if (context.User.RootElement.TryGetProperty(JwtClaimTypes.Role, out var role)) 
+                        {
+                            var roleNames = role.ValueKind == System.Text.Json.JsonValueKind.Array ? role.EnumerateArray().Select(e => e.GetString()) : new[] { role.GetString() };
 
-                        var claims = roleNames.Select(rn => new Claim(JwtClaimTypes.Role, rn)).ToList();
-                        var id = context.Principal.Identity as ClaimsIdentity;
-                        id?.AddClaims(claims);
+                            var claims = roleNames.Select(rn => new Claim(JwtClaimTypes.Role, rn)).ToList();
+                            var id = context.Principal.Identity as ClaimsIdentity;
+                            id?.AddClaims(claims);
+                        }
 
                         return Task.CompletedTask;
                     };
