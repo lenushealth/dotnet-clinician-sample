@@ -3,8 +3,8 @@ A sample clinician app that demonstrates requesting agency for another users and
 
 # Requirements
 
-- .NET core 2.0 SDK
-- Visual Studio 2017 or Visual Studio Code
+- .NET core 3.1 SDK
+- Visual Studio 2019 or Visual Studio Code
 - Access to an instance of the Lenus Health platform
 - Access to register a new client application for use with this sample
 
@@ -12,7 +12,7 @@ A sample clinician app that demonstrates requesting agency for another users and
 
 Visit https://portal.dhi-dse.scot, register and/or login to your account and create a new client application.  The client application will be required to use the following configuration:
 
-- RedirectUri: `http://localhost:5000/signin-oidc`
+- RedirectUri: `https://localhost:5001/signin-oidc`
 - Grant Type: `authorization code`
 - Basic Scopes: `openid`, `profile`, `email`, `agency_api`
 - Correlation Scopes: `read.blood_pressure`
