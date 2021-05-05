@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/bin/Debug/netcoreapp2.0/dotnet-clinician-sample.dll",
+            "program": "${workspaceFolder}/src/bin/Debug/netcoreapp3.1/dotnet-clinician-sample.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src",
             "stopAtEntry": false,

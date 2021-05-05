@@ -42,7 +42,7 @@
                    {
                        new {name = nameof(BloodPressureSampleModel.Diastolic), data = @Model.Select(d => new {meta = new {category = d.Diastolic.Category(BloodPressureUnits.Diastolic).ToString("G")}, x = d.From.ToString("s"), y = d.Diastolic.ToString("mmHg")})},
                        new {name = nameof(BloodPressureSampleModel.Systolic), data = @Model.Select(d => new {meta = new {category = d.Diastolic.Category(BloodPressureUnits.Diastolic).ToString("G")}, x = d.From.ToString("s"), y = d.Systolic.ToString("mmHg")})},
-                   }, new JsonSerializerSettings() {Formatting = Formatting.Indented,});
+                   });
 
         var chart = new Chartist.Line('#@SampleDataTypes.BloodPressure',
             {
