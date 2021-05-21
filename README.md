@@ -10,7 +10,7 @@ A sample clinician app that demonstrates requesting agency for another users and
 
 # Creating a client application
 
-Visit https://portal.dhi-dse.scot, register and/or login to your account and create a new client application.  The client application will be required to use the following configuration:
+Visit the developer portal for your assigned environment, register and/or login to your account and create a new client application.  The client application will be required to use the following configuration:
 
 - RedirectUri: `https://localhost:5001/signin-oidc`
 - Grant Type: `authorization code`
@@ -21,12 +21,6 @@ Visit https://portal.dhi-dse.scot, register and/or login to your account and cre
 - Vitals Quantity Scopes: `read.heart_rate`, `read.blood_pressure.blood_pressure_diastolic`, `read.blood_pressure.blood_pressure_systolic`
 
 Set a known `<client-secret>` value
-
-# Deploy to Azure
-
-Deploying an instance directly to azure is the quickest way to see the sample in action, this will of course require that you have an active Azure subscription into which the resources can be created.  Use the button below to start the deployment
-
-[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
 
 You will need to know:
 
@@ -75,4 +69,4 @@ Finally, update the Agency configuration as above:
 
 ## Building and Running
 
-Open the solution either in Visual Studio 2017 or using Visual Studio Code.
+Open the solution either in Visual Studio 2019 or using Visual Studio Code.
