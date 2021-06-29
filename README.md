@@ -1,3 +1,5 @@
+> This repository has been archived and the content merged into the `integration-samples` repo and will not receive any further updates, please refer to the `integration-samples` repository for updated samples.
+> 
 # dotnet-clinician-sample
 A sample clinician app that demonstrates requesting agency for another users and displaying their data samples
 
